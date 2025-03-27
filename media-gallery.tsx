@@ -37,6 +37,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
+import { useAuth } from '@/contexts/auth-context'
+import { AuthDialog } from '@/components/auth-dialog'
 
 // Image URLs array
 const allImageUrls = [
@@ -164,6 +166,7 @@ const filterCategories = {
 }
 
 export default function MediaGallery() {
+  const { user, signOut } = useAuth()
   const [loading, setLoading] = useState(true)
   const [loadedImages, setLoadedImages] = useState<string[]>([])
   const [selectedFilter, setSelectedFilter] = useState<string | null>(null)
@@ -267,12 +270,16 @@ export default function MediaGallery() {
             
             {/* Right-aligned Search and Action Buttons */}
             <div className="flex items-center space-x-4 ml-4 shrink-0">
-              {/* Search Bar */}
-
-              
-              <button key="user-btn" className="text-zinc-400 hover:text-white">
-                <User className="h-5 w-5" />
-              </button>
+              {user ? (
+                <div className="flex items-center space-x-4">
+                  <span className="text-sm text-zinc-400">{user.email}</span>
+                  <Button variant="ghost" size="sm" onClick={() => signOut()}>
+                    Sign Out
+                  </Button>
+                </div>
+              ) : (
+                <AuthDialog />
+              )}
               <button key="bell-btn" className="text-zinc-400 hover:text-white">
                 <Bell className="h-5 w-5" />
               </button>
